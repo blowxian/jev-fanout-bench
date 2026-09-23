@@ -37,7 +37,7 @@ under `results/` is a measurement until a real run has produced it.
 Python 3.10+, standard library only.
 
 ```bash
-export TYPESAFE_API_KEY=...        # from https://console.typesafe.ai/
+export TYPESAFE_API_KEY=...        # from https://console.typesafe.ai/ (new signups paused since 2026-09-22)
 python bench.py run                # ~2,980 requests, ~15 minutes
 python bench.py report             # -> results/summary.md, summary.json, fanout.svg
 ```
@@ -47,6 +47,20 @@ A full run sends 2,976 requests and about 2 million input tokens: roughly
 billed). It pins `jev-1.13.0` rather than `jev-latest`, which can move to a
 new model mid-study; `--model` overrides it. 429 and 529 responses and
 network errors are retried with backoff, as the API docs ask.
+
+TypeSafe paused new signups on 22 September 2026. Without a TypeSafe
+account, run the identical requests through OpenRouter's TypeSafe-compatible
+System One endpoint with an OpenRouter key:
+
+```bash
+export OPENROUTER_API_KEY=...
+python bench.py run --provider openrouter    # model typesafe/jev-1.13
+```
+
+OpenRouter also returns what each request was charged (`usage.cost`), and the
+report checks that against input tokens × the published rate. Keys can
+instead live in `~/.config/<provider>/api_key`; they are sent only in the
+Authorization header and never written to the log.
 
 To exercise the whole pipeline without a key or network access:
 

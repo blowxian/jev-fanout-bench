@@ -3,7 +3,8 @@
 jev-fanout-bench: does asking Jev N questions in one call really bill the state
 once, and do the answers change?
 
-    python bench.py run              # real run; needs TYPESAFE_API_KEY
+    python bench.py run              # real run against TypeSafe (TYPESAFE_API_KEY)
+    python bench.py run --provider openrouter   # same API via OpenRouter
     python bench.py run --dry-run    # no key, no network: synthetic usage
     python bench.py report           # latest run in results/raw.jsonl -> summary
 
@@ -42,11 +43,21 @@ from pathlib import Path
 
 from bench_data import QUESTION_COUNTS, QUESTIONS, SIZES, TICKETS, build_state, subsets
 
-HOST, PATH = "api.typesafe.ai", "/v1/systemone"
 # Published rate, https://docs.typesafe.ai/models, checked 2026-09-22.
+# OpenRouter lists the same rate: https://openrouter.ai/typesafe/jev-1.13
 USD_PER_M_INPUT = 0.042
-# Pin a version: jev-latest can move to a new model mid-study.
-DEFAULT_MODEL = "jev-1.13.0"
+
+# Two routes to the same System One API. OpenRouter's /systemone endpoint is
+# documented as TypeSafe-SDK compatible (same body, same answers) and adds
+# usage.cost, the amount actually billed — which lets the report check the
+# bill in dollars, not just tokens. TypeSafe paused new signups on
+# 2026-09-22, so for new users OpenRouter is the only way in.
+PROVIDERS = {
+    "typesafe": {"host": "api.typesafe.ai", "path": "/v1/systemone",
+                 "env": "TYPESAFE_API_KEY", "model": "jev-1.13.0"},
+    "openrouter": {"host": "openrouter.ai", "path": "/api/v1/systemone",
+                   "env": "OPENROUTER_API_KEY", "model": "typesafe/jev-1.13"},
+}
 ROOT = Path(__file__).parent
 RAW = ROOT / "results" / "raw.jsonl"
 QMAP = dict(QUESTIONS)
@@ -60,13 +71,13 @@ class Client:
     """One persistent HTTPS connection, so every request pays the same
     (already warm) connection cost and latency compares like with like."""
 
-    def __init__(self, key: str):
-        self.key = key
+    def __init__(self, key: str, host: str, path: str):
+        self.key, self.host, self.path = key, host, path
         self.conn: http.client.HTTPSConnection | None = None
 
     def _conn(self) -> http.client.HTTPSConnection:
         if self.conn is None:
-            self.conn = http.client.HTTPSConnection(HOST, timeout=60, context=ssl.create_default_context())
+            self.conn = http.client.HTTPSConnection(self.host, timeout=60, context=ssl.create_default_context())
         return self.conn
 
     def _retry_after(self, value: str | None, fallback: float) -> float:
@@ -89,7 +100,7 @@ class Client:
             t0 = time.perf_counter()
             try:
                 c = self._conn()
-                c.request("POST", PATH, body=body, headers={
+                c.request("POST", self.path, body=body, headers={
                     "Authorization": f"Bearer {self.key}",
                     "Content-Type": "application/json",
                     "User-Agent": "jev-fanout-bench/2.0",
@@ -134,7 +145,9 @@ def fake_call(body: bytes) -> dict:
             answers[k] = {"type": "score", "score": round(rng.uniform(0, len(v["criteria"]) - 1), 2), "confidence": 0.8}
     ms = round(random.uniform(200, 400), 1)
     return {"status": 200, "attempts": 1, "latency_ms": ms, "total_ms": ms,
-            "response": {"model": "dry-run", "answers": answers, "usage": {"input_tokens": tokens, "output_tokens": 0}}}
+            "response": {"model": "dry-run", "answers": answers,
+                         "usage": {"input_tokens": tokens, "output_tokens": 0,
+                                   "cost": tokens / 1e6 * USD_PER_M_INPUT}}}
 
 
 def blocks(repeats: int, seed: int = 2026) -> list[dict]:
@@ -164,10 +177,23 @@ def git_commit() -> str | None:
         return None
 
 
+def read_key(provider: str) -> str:
+    """The environment variable, else ~/.config/<provider>/api_key. The key is
+    only ever sent in the Authorization header; it is never logged."""
+    env = PROVIDERS[provider]["env"]
+    if os.environ.get(env):
+        return os.environ[env].strip()
+    f = Path.home() / ".config" / provider / "api_key"
+    return f.read_text().strip() if f.exists() else ""
+
+
 def cmd_run(args) -> int:
-    key = os.environ.get("TYPESAFE_API_KEY", "")
+    prov = PROVIDERS[args.provider]
+    args.model = args.model or prov["model"]
+    key = "" if args.dry_run else read_key(args.provider)
     if not args.dry_run and not key:
-        print("TYPESAFE_API_KEY is not set. Use --dry-run to exercise the pipeline without it.", file=sys.stderr)
+        print(f"No key: set {prov['env']} or write it to ~/.config/{args.provider}/api_key. "
+              "Use --dry-run to exercise the pipeline without one.", file=sys.stderr)
         return 2
     bl = blocks(args.repeats)
     total = sum(1 + b["n"] for b in bl)
@@ -179,9 +205,10 @@ def cmd_run(args) -> int:
     # not share an id, or the report would pair one run's requests with another's.
     run_id = (datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ") + "-" + os.urandom(3).hex()
               + ("-dry" if args.dry_run else ""))
-    client = None if args.dry_run else Client(key)
+    client = None if args.dry_run else Client(key, prov["host"], prov["path"])
     send = (lambda body: fake_call(body)) if args.dry_run else client.call
-    meta = {"kind": "run", "run_id": run_id, "dry_run": args.dry_run, "requested_model": args.model,
+    meta = {"kind": "run", "run_id": run_id, "dry_run": args.dry_run, "provider": args.provider,
+            "endpoint": f"https://{prov['host']}{prov['path']}", "requested_model": args.model,
             "started": datetime.now(timezone.utc).isoformat(timespec="seconds"),
             "python": sys.version.split()[0], "platform": platform.platform(),
             "git_commit": git_commit(), "usd_per_m_input": USD_PER_M_INPUT,
@@ -363,10 +390,22 @@ def cmd_report(args) -> int:
                for (qt, m), v in sorted(between.items())}
 
     total = sum(r["response"]["usage"]["input_tokens"] for r in ok)
+    # Where the route reports what it charged (OpenRouter's usage.cost), check
+    # the bill against tokens x published rate, request by request.
+    billed = [r for r in ok if isinstance(r["response"]["usage"].get("cost"), (int, float))]
+    billing = None
+    if billed:
+        dev = [abs(r["response"]["usage"]["cost"] - r["response"]["usage"]["input_tokens"] / 1e6 * USD_PER_M_INPUT)
+               for r in billed]
+        billing = {"requests_with_cost": len(billed),
+                   "billed_usd_total": sum(r["response"]["usage"]["cost"] for r in billed),
+                   "max_abs_deviation_usd": max(dev),
+                   "output_tokens_total": sum(r["response"]["usage"].get("output_tokens", 0) for r in billed)}
     summary = {
         "run": meta, "model": models[0] if models else None, "requests_ok": len(ok),
         "requests_failed": len(bad), "blocks_incomplete": incomplete,
         "total_input_tokens": total, "total_cost_usd": total / 1e6 * USD_PER_M_INPUT,
+        "billing_check": billing,
         "fixed_overhead_tokens_median": overhead,
         "implied_fixed_tokens_by_size": fixed_by_size,
         "linearity_max_spread_tokens": max(spread.values(), default=0),
@@ -388,7 +427,8 @@ def render_md(s: dict) -> str:
     if m["dry_run"]:
         lines += ["> **DRY RUN — synthetic token counts, not measurements.**", ""]
     lines += [
-        f"Run `{m['run_id']}`, model `{s['model']}` (requested `{m['requested_model']}`), "
+        f"Run `{m['run_id']}` via `{m.get('endpoint', 'api.typesafe.ai')}`, model `{s['model']}` "
+        f"(requested `{m['requested_model']}`), "
         f"{s['requests_ok']:,} requests, {s['total_input_tokens']:,} input tokens, "
         f"${s['total_cost_usd']:.4f} at ${m['usd_per_m_input']}/1M. Python {m['python']}, "
         f"commit `{m['git_commit'][:10] if m['git_commit'] else 'uncommitted'}`.", "",
@@ -404,6 +444,15 @@ def render_md(s: dict) -> str:
             f"| {a['size']} | {a['n']} | {f(a['batched_tokens'])} | {f(a['separate_tokens'])} | "
             f"{sv['mean']:.1f}%{ci} | ${f(a['saved_usd_per_1k_items'], 'median', '{:.4f}')} | "
             f"{f(a['latency_ratio'], 'median', '{:.2f}x')} / {f(a['latency_ratio'], 'p95', '{:.2f}x')} |")
+    lines += [
+    ]
+    b = s.get("billing_check")
+    if b:
+        lines += ["", "## Does the bill match the rate?", "",
+                  f"{b['requests_with_cost']:,} responses reported what they were charged (`usage.cost`): "
+                  f"${b['billed_usd_total']:.6f} in total. Against input tokens × ${m['usd_per_m_input']}/1M, "
+                  f"the largest per-request difference is ${b['max_abs_deviation_usd']:.9f}. Those requests also "
+                  f"returned {b['output_tokens_total']:,} output tokens, which the charge does not include."]
     lines += [
         "", "## Is billing linear?", "",
         "Under a linear model, `separate − batched = (N − 1) × F`, where F is what one request bills apart "
@@ -467,7 +516,8 @@ def main() -> int:
     sub = p.add_subparsers(dest="cmd", required=True)
     r = sub.add_parser("run", help="send the requests")
     r.add_argument("--dry-run", action="store_true", help="no key, no network, synthetic usage")
-    r.add_argument("--model", default=DEFAULT_MODEL)
+    r.add_argument("--provider", choices=sorted(PROVIDERS), default="typesafe")
+    r.add_argument("--model", default=None, help="default: the provider's pinned Jev 1.13 id")
     r.add_argument("--repeats", type=int, default=3)
     r.add_argument("--warmup", type=int, default=3)
     r.add_argument("--out", default=str(RAW))
