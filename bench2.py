@@ -108,9 +108,11 @@ class Runner:
 def error_class(status, body) -> str:
     """A coarse, publishable label for a failure: never the raw body."""
     b = (body or "").lower()
-    for key, label in [("context", "context_length"), ("token", "token_limit"), ("too many questions", "question_count"),
-                       ("question", "question_validation"), ("rate", "rate_limit"), ("credit", "billing"),
-                       ("balance", "billing"), ("timeout", "timeout")]:
+    if status == 402:
+        return "402:billing"
+    for key, label in [("credit", "billing"), ("balance", "billing"), ("context", "context_length"),
+                       ("token", "token_limit"), ("too many questions", "question_count"),
+                       ("question", "question_validation"), ("rate", "rate_limit"), ("timeout", "timeout")]:
         if key in b:
             return f"{status}:{label}"
     return f"{status}:other"
@@ -390,6 +392,61 @@ def e8(r: Runner, cpt: float) -> dict:
 
 
 # --------------------------------------------------------------------------
+# E9  state format: prose vs JSON vs key: value (round 3)
+# --------------------------------------------------------------------------
+
+PLANS = ["Starter", "Team", "Business"]
+
+
+def fact_set(ticket: dict, size: str) -> list[tuple[str, str]]:
+    """Ordered (field, value) pairs. Every format below renders exactly these."""
+    import random as _r
+    rng = _r.Random(f"facts:{ticket['id']}:{size}")
+    facts = [("customer_message", ticket["text"]),
+             ("plan", rng.choice(PLANS)),
+             ("seats", str(rng.randint(2, 40))),
+             ("account_age_months", str(rng.randint(1, 60))),
+             ("last_invoice_usd", f"{rng.uniform(20, 900):.2f}"),
+             ("open_tickets", str(rng.randint(0, 4)))]
+    extra = {"small": 0, "medium": 8, "large": 30}[size]
+    from bench_data import HISTORY
+    for i in range(extra):
+        facts.append((f"prior_message_{i + 1}", HISTORY[i % len(HISTORY)]))
+    return facts
+
+
+def render(facts: list[tuple[str, str]], fmt: str) -> str:
+    if fmt == "json":
+        return json.dumps(dict(facts), separators=(",", ":"), ensure_ascii=False)
+    if fmt == "kv":
+        return "\n".join(f"{k}: {v}" for k, v in facts)
+    # prose: one plain sentence per field, same order, same values
+    out = []
+    for k, v in facts:
+        label = k.replace("_", " ")
+        out.append(f"The {label} is: {v}" if k.startswith(("customer_message", "prior_message")) else f"The {label} is {v}.")
+    return " ".join(x if x.endswith((".", "?", "!")) else x + "." for x in out)
+
+
+E9_QS = ["is_billing", "wants_refund", "department", "urgency"]
+
+
+def e9(r: Runner) -> dict:
+    qs = {q: QMAP[q] for q in E9_QS}
+    rng = random.Random(9)
+    for size in ("small", "medium", "large"):
+        for t in TICKETS[:6]:
+            facts = fact_set(t, size)
+            for rep in range(3):
+                fmts = ["prose", "json", "kv"]
+                rng.shuffle(fmts)  # rotate format order within each block
+                for fmt in fmts:
+                    r.ask("e9", {"cond": "format", "fmt": fmt, "size": size, "ticket": t["id"], "rep": rep,
+                                 "chars": len(render(facts, fmt))}, render(facts, fmt), qs)
+    return {}
+
+
+# --------------------------------------------------------------------------
 # Run
 # --------------------------------------------------------------------------
 
@@ -420,6 +477,8 @@ def cmd_run(args) -> int:
         e5(r)
     if "e8" in only:
         e8(r, args.cpt)
+    if "e9" in only:
+        e9(r)
     r.pub.write(json.dumps({"kind": "notes", "run_id": r.run_id, **notes}) + "\n")
     print(f"Run {r.run_id}: {r.n} requests.")
     return 0

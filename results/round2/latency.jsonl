@@ -5,3 +5,4 @@
 {"ts": "2026-09-23T17:04:05+00:00", "status": 200, "attempts": 1, "latency_ms": 1628.0, "total_ms": 1628.0, "input_tokens": 470, "cost": 1.974e-05, "model": "typesafe/jev-1.13-20260917"}
 {"ts": "2026-09-23T17:09:05+00:00", "status": 200, "attempts": 1, "latency_ms": 1592.5, "total_ms": 1592.5, "input_tokens": 470, "cost": 1.974e-05, "model": "typesafe/jev-1.13-20260917"}
 {"ts": "2026-09-23T17:14:05+00:00", "status": 200, "attempts": 1, "latency_ms": 1510.0, "total_ms": 1510.0, "input_tokens": 470, "cost": 1.974e-05, "model": "typesafe/jev-1.13-20260917"}
+{"ts": "2026-09-23T17:19:05+00:00", "status": 402, "attempts": 1, "latency_ms": 1379.4, "total_ms": 1379.4, "input_tokens": null, "cost": null, "model": null}

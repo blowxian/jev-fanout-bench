@@ -4,14 +4,15 @@
       "20260923T164332Z-r2",
       "20260923T164502Z-r2",
       "20260923T164851Z-r2",
-      "20260923T171432Z-r2"
+      "20260923T171432Z-r2",
+      "20260923T172119Z-r2"
     ],
     "provider": "openrouter",
     "requested_model": "typesafe/jev-1.13",
     "usd_per_m_input": 0.042,
     "python": "3.14.5"
   },
-  "requests": 524,
+  "requests": 527,
   "ok": 516,
   "billed_usd": 0.05798,
   "input_tokens": 1380472,
@@ -141,14 +142,14 @@
       "instr_structured": 298
     },
     "additivity": {
-      "three_nouls": {
-        "all": 326,
-        "predicted_from_singles": 306,
-        "residual": 20
-      },
       "mixed": {
         "all": 411,
         "predicted_from_singles": 391,
+        "residual": 20
+      },
+      "three_nouls": {
+        "all": 326,
+        "predicted_from_singles": 306,
         "residual": 20
       }
     },

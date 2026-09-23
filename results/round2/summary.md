@@ -1,6 +1,6 @@
 # Round 2 results
 
-Runs 20260923T164332Z-r2, 20260923T164502Z-r2, 20260923T164851Z-r2, 20260923T171432Z-r2 via openrouter (`typesafe/jev-1.13-20260917`): 524 requests (516 returned 200; the rest are deliberate over-limit probes), 1,380,472 input tokens, $0.0580 billed. Answers were used only to compute the distances below and are not published (TypeSafe MCA).
+Runs 20260923T164332Z-r2, 20260923T164502Z-r2, 20260923T164851Z-r2, 20260923T171432Z-r2, 20260923T172119Z-r2 via openrouter (`typesafe/jev-1.13-20260917`): 527 requests (516 returned 200; the rest are deliberate over-limit probes), 1,380,472 input tokens, $0.0580 billed. Answers were used only to compute the distances below and are not published (TypeSafe MCA).
 
 ## E1 · What a request is billed
 
@@ -13,7 +13,7 @@ Base request (state `.`, one 1-word Noul): **270 tokens**.
 | Choice option (6-word description) | 20.77 | 0.9998 | 2→319, 5→376, 10→471, 50→1311 |
 | Score level | 8.0 | 1.0 | 2→292, 3→300, 5→316, 7→332, 10→356 |
 
-Single conditions: {'noul_criteria': 292, 'choice_longkeys': 425, 'instr_plain': 287, 'instr_structured': 298}. Additivity (several questions in one call vs singles): three_nouls: residual 20 tokens; mixed: residual 20 tokens — i.e. ~10 tokens of framing per extra question.
+Single conditions: {'noul_criteria': 292, 'choice_longkeys': 425, 'instr_plain': 287, 'instr_structured': 298}. Additivity (several questions in one call vs singles): mixed: residual 20 tokens; three_nouls: residual 20 tokens — i.e. ~10 tokens of framing per extra question.
 
 | Language | Chars per token | R² | Texts |
 |---|---:|---:|---:|

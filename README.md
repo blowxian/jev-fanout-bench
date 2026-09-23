@@ -98,8 +98,14 @@ train competing models.
   translated answers, the lowest-confidence third of Choice answers moved
   15× more than the highest third (Spearman ρ −0.79), and all five top-option
   changes were in that low third. Score: 7.5×, ρ −0.51. Gate on confidence.
-- A 72-hour latency monitor (`monitor.py`, every 5 minutes) is running;
-  samples accumulate in `results/round2/latency.jsonl`.
+- The latency monitor (`monitor.py`, every 5 minutes, fresh connection)
+  was planned for 72 hours but stopped after 34 minutes: from 17:19 UTC on
+  2026-09-23 OpenRouter returned HTTP 402 ("insufficient credits") for this
+  account, which had been served without purchased credits until then. Its
+  7 successful samples (1.5–1.7 s cold, TLS handshake included) are in
+  `results/round2/latency.jsonl`; they are not a service-level series. A
+  planned round 3 (state format: prose vs JSON vs `key: value`, `bench2.py
+  --only e9`) is implemented but not run for the same reason.
 
 An estimator built on these coefficients is at
 [jevpricing.com/tokens](https://jevpricing.com/tokens/): median error 1.4% over
