@@ -57,6 +57,19 @@ export OPENROUTER_API_KEY=...
 python bench.py run --provider openrouter    # model typesafe/jev-1.13
 ```
 
+Cloudflare Workers AI serves the same model (`typesafe/jev`, $0.042 per 1M
+input in the Cloudflare dashboard) to any Cloudflare account, with a Workers
+AI API token:
+
+```bash
+export CLOUDFLARE_API_TOKEN=... CLOUDFLARE_ACCOUNT_ID=...
+python bench.py run --provider cloudflare --max-blocks 2   # smoke test first
+python bench.py run --provider cloudflare
+```
+
+Workers AI forwards to `jev-latest` and cannot pin a version; the report
+refuses a run whose responses name more than one model.
+
 OpenRouter also returns what each request was charged (`usage.cost`), and the
 report checks that against input tokens × the published rate. Keys can
 instead live in `~/.config/<provider>/api_key`; they are sent only in the

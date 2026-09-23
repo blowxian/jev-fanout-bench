@@ -57,6 +57,14 @@ PROVIDERS = {
                  "env": "TYPESAFE_API_KEY", "model": "jev-1.13.0"},
     "openrouter": {"host": "openrouter.ai", "path": "/api/v1/systemone",
                    "env": "OPENROUTER_API_KEY", "model": "typesafe/jev-1.13"},
+    # Workers AI serves Jev as a third-party model at the same $0.042/1M
+    # (Cloudflare dashboard, checked 2026-09-23). Its REST API wraps the same
+    # body as {"model", "input"} and the answer as {"result"}; Client
+    # translates both ways, so the log and the analysis see TypeSafe's shape.
+    # It does not take a version pin: it forwards to jev-latest, and the
+    # report refuses a run whose responses name more than one model.
+    "cloudflare": {"host": "api.cloudflare.com", "path": "/client/v4/accounts/{account}/ai/run",
+                   "env": "CLOUDFLARE_API_TOKEN", "model": "typesafe/jev", "wire": "cloudflare"},
 }
 ROOT = Path(__file__).parent
 RAW = ROOT / "results" / "raw.jsonl"
@@ -71,9 +79,27 @@ class Client:
     """One persistent HTTPS connection, so every request pays the same
     (already warm) connection cost and latency compares like with like."""
 
-    def __init__(self, key: str, host: str, path: str):
-        self.key, self.host, self.path = key, host, path
+    def __init__(self, key: str, host: str, path: str, wire: str = "systemone"):
+        self.key, self.host, self.path, self.wire = key, host, path, wire
         self.conn: http.client.HTTPSConnection | None = None
+
+    def encode(self, body: bytes) -> bytes:
+        if self.wire != "cloudflare":
+            return body
+        req = json.loads(body)
+        return json.dumps({"model": req["model"],
+                           "input": {"state": req["state"], "questions": req["questions"]}}).encode()
+
+    def decode(self, raw: bytes, requested_model: str) -> tuple[dict | None, str | None]:
+        """(response in TypeSafe's shape, error)."""
+        j = json.loads(raw)
+        if self.wire != "cloudflare":
+            return j, None
+        if not j.get("success", True) or "result" not in j:
+            return None, json.dumps(j.get("errors") or j)[:2000]
+        res = j["result"]
+        res.setdefault("model", requested_model)
+        return res, None
 
     def _conn(self) -> http.client.HTTPSConnection:
         if self.conn is None:
@@ -92,6 +118,8 @@ class Client:
                 return fallback
 
     def call(self, body: bytes, max_tries: int = 6) -> dict:
+        requested_model = json.loads(body)["model"]
+        body = self.encode(body)
         """POST with backoff on 429/529 and on network errors. `latency_ms` is
         the successful attempt; `total_ms` includes every retry and wait."""
         t_start = time.perf_counter()
@@ -116,7 +144,10 @@ class Client:
                         "total_ms": round((time.perf_counter() - t_start) * 1000, 1)}
                 if r.status != 200:
                     return {**base, "error": raw.decode(errors="replace")[:2000]}
-                return {**base, "response": json.loads(raw)}
+                resp, err = self.decode(raw, requested_model)
+                if err:
+                    return {**base, "status": 502, "error": err}
+                return {**base, "response": resp}
             except (OSError, http.client.HTTPException, json.JSONDecodeError) as e:
                 last_err = f"{type(e).__name__}: {e}"
                 self.conn = None  # reconnect on the next attempt
@@ -177,14 +208,19 @@ def git_commit() -> str | None:
         return None
 
 
-def read_key(provider: str) -> str:
-    """The environment variable, else ~/.config/<provider>/api_key. The key is
-    only ever sent in the Authorization header; it is never logged."""
-    env = PROVIDERS[provider]["env"]
+def read_config(provider: str, name: str, env: str) -> str:
+    """The environment variable, else ~/.config/<provider>/<name>."""
     if os.environ.get(env):
         return os.environ[env].strip()
-    f = Path.home() / ".config" / provider / "api_key"
+    f = Path.home() / ".config" / provider / name
     return f.read_text().strip() if f.exists() else ""
+
+
+def read_key(provider: str) -> str:
+    """The API key or token. It is only ever sent in the Authorization
+    header; it is never logged."""
+    name = "api_token" if provider == "cloudflare" else "api_key"
+    return read_config(provider, name, PROVIDERS[provider]["env"])
 
 
 def cmd_run(args) -> int:
@@ -192,10 +228,13 @@ def cmd_run(args) -> int:
     args.model = args.model or prov["model"]
     key = "" if args.dry_run else read_key(args.provider)
     if not args.dry_run and not key:
-        print(f"No key: set {prov['env']} or write it to ~/.config/{args.provider}/api_key. "
+        name = "api_token" if args.provider == "cloudflare" else "api_key"
+        print(f"No key: set {prov['env']} or write it to ~/.config/{args.provider}/{name}. "
               "Use --dry-run to exercise the pipeline without one.", file=sys.stderr)
         return 2
     bl = blocks(args.repeats)
+    if args.max_blocks:
+        bl = bl[: args.max_blocks]
     total = sum(1 + b["n"] for b in bl)
     print(f"{len(bl)} blocks, {total} requests ({len(TICKETS)} tickets x {len(SIZES)} sizes x N in "
           f"{QUESTION_COUNTS} x balanced subsets x {args.repeats} repeats), plus {args.warmup} warm-up.")
@@ -205,7 +244,14 @@ def cmd_run(args) -> int:
     # not share an id, or the report would pair one run's requests with another's.
     run_id = (datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ") + "-" + os.urandom(3).hex()
               + ("-dry" if args.dry_run else ""))
-    client = None if args.dry_run else Client(key, prov["host"], prov["path"])
+    path = prov["path"]
+    if "{account}" in path:
+        account = read_config(args.provider, "account_id", "CLOUDFLARE_ACCOUNT_ID")
+        if not account and not args.dry_run:
+            print("No Cloudflare account id: set CLOUDFLARE_ACCOUNT_ID or ~/.config/cloudflare/account_id.", file=sys.stderr)
+            return 2
+        path = path.format(account=account or "DRY")
+    client = None if args.dry_run else Client(key, prov["host"], path, prov.get("wire", "systemone"))
     send = (lambda body: fake_call(body)) if args.dry_run else client.call
     meta = {"kind": "run", "run_id": run_id, "dry_run": args.dry_run, "provider": args.provider,
             "endpoint": f"https://{prov['host']}{prov['path']}", "requested_model": args.model,
@@ -522,6 +568,7 @@ def main() -> int:
     r.add_argument("--warmup", type=int, default=3)
     r.add_argument("--out", default=str(RAW))
     r.add_argument("--sleep", type=float, default=0.05, help="seconds between requests")
+    r.add_argument("--max-blocks", type=int, default=0, help="smoke test: stop after this many blocks")
     r.set_defaults(fn=cmd_run)
     s = sub.add_parser("report", help="summarise one run from the raw log")
     s.add_argument("--input", default=str(RAW))
