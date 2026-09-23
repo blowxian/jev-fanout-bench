@@ -4,7 +4,7 @@ this repository (CC0), so anyone can rerun the exact same requests.
 
 A "state" is one support ticket, optionally padded with that customer's prior
 messages and order records. Padding is how the benchmark varies state size
-(roughly 100, 500 and 2,000 input tokens) while keeping the question set and
+(roughly 30, 440 and 1,800 input tokens, plus a one-word control) while keeping the question set and
 the decision identical — the only thing fan-out changes is how often the state
 is paid for.
 """
