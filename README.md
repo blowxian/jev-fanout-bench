@@ -93,6 +93,11 @@ train competing models.
 - **Wording.** Reordering Choice options never changed the top option;
   removing option descriptions or paraphrasing moved probabilities by 2–10
   points — re-check thresholds after rewording.
+- **Confidence flags the fragile answers** (E7, no new requests,
+  [`confidence.md`](results/round2/confidence.md)): across 960 reworded or
+  translated answers, the lowest-confidence third of Choice answers moved
+  15× more than the highest third (Spearman ρ −0.79), and all five top-option
+  changes were in that low third. Score: 7.5×, ρ −0.51. Gate on confidence.
 - A 72-hour latency monitor (`monitor.py`, every 5 minutes) is running;
   samples accumulate in `results/round2/latency.jsonl`.
 

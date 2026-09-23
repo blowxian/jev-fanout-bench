@@ -1,0 +1,57 @@
+{
+  "pairs": 960,
+  "by_type": {
+    "choice": {
+      "spearman_conf_vs_shift": -0.786,
+      "terciles": {
+        "low": {
+          "conf_min": 0.54,
+          "conf_max": 0.92,
+          "mean_shift": 0.0777,
+          "top_changed": 5.0,
+          "n": 160
+        },
+        "mid": {
+          "conf_min": 0.92,
+          "conf_max": 1,
+          "mean_shift": 0.0157,
+          "top_changed": 0.0,
+          "n": 160
+        },
+        "high": {
+          "conf_min": 1,
+          "conf_max": 1,
+          "mean_shift": 0.0054,
+          "top_changed": 0.0,
+          "n": 160
+        }
+      }
+    },
+    "score": {
+      "spearman_conf_vs_shift": -0.51,
+      "terciles": {
+        "low": {
+          "conf_min": 0,
+          "conf_max": 0.56,
+          "mean_shift": 0.06,
+          "top_changed": null,
+          "n": 160
+        },
+        "mid": {
+          "conf_min": 0.56,
+          "conf_max": 0.79,
+          "mean_shift": 0.0453,
+          "top_changed": null,
+          "n": 160
+        },
+        "high": {
+          "conf_min": 0.79,
+          "conf_max": 1,
+          "mean_shift": 0.008,
+          "top_changed": null,
+          "n": 160
+        }
+      }
+    }
+  }
+}
