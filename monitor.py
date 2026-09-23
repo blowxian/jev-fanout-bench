@@ -4,8 +4,10 @@ E6: end-to-end latency of one fixed Jev request, every 5 minutes.
 
     nohup python3 monitor.py --provider openrouter --hours 72 >/dev/null 2>&1 &
 
-One location, one client: this is an observation of what one caller saw, not a
-service-level measurement. Each sample appends a line to
+One location, one client, a fresh HTTPS connection per sample (so latency
+includes the TLS handshake): an observation of what one caller saw, not a
+service-level measurement. Samples before 2026-09-23T17:05Z reused a stale
+keep-alive connection and show attempts=2. Each sample appends a line to
 results/round2/latency.jsonl (timestamp, status, latency, billed tokens, cost,
 model — no answers). It stops on its own after --hours, or after three
 consecutive 401/402/403 responses, i.e. when the key or the free window ends.
@@ -41,6 +43,10 @@ def main() -> int:
     fatal = 0
     while datetime.now(timezone.utc) < end:
         t0 = time.time()
+        # A fresh connection every sample: a keep-alive socket idle for five
+        # minutes is closed by the server, which made every first attempt fail
+        # and retry. Each sample is now a cold request, handshake included.
+        client.conn = None
         res = client.call(body)
         ok = res["status"] == 200
         u = res["response"]["usage"] if ok else {}
