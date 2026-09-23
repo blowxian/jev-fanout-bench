@@ -1,6 +1,6 @@
 # Round 2 results
 
-Runs 20260923T164332Z-r2, 20260923T164502Z-r2, 20260923T164851Z-r2 via openrouter (`typesafe/jev-1.13-20260917`): 487 requests (479 returned 200; the rest are deliberate over-limit probes), 851,428 input tokens, $0.0358 billed. Answers were used only to compute the distances below and are not published (TypeSafe MCA).
+Runs 20260923T164332Z-r2, 20260923T164502Z-r2, 20260923T164851Z-r2, 20260923T171432Z-r2 via openrouter (`typesafe/jev-1.13-20260917`): 524 requests (516 returned 200; the rest are deliberate over-limit probes), 1,380,472 input tokens, $0.0580 billed. Answers were used only to compute the distances below and are not published (TypeSafe MCA).
 
 ## E1 · What a request is billed
 
@@ -76,3 +76,22 @@ Repeat noise: Noul 0.003, Choice TVD 0.009.
 | paraphrase | 0.024 | — | — |
 
 Wording results describe stability, not accuracy: the tickets are unlabelled.
+
+## E8 · Latency vs request size (warm connection, 3 repeats)
+
+| State tokens | Questions | Median billed | Median latency |
+|---:|---:|---:|---:|
+| 1,000 | 1 | 1,286 | 375 ms |
+| 1,000 | 8 | 1,591 | 375 ms |
+| 4,000 | 1 | 4,317 | 382 ms |
+| 4,000 | 8 | 4,622 | 502 ms |
+| 8,000 | 1 | 8,354 | 478 ms |
+| 8,000 | 8 | 8,659 | 441 ms |
+| 16,000 | 1 | 16,429 | 571 ms |
+| 16,000 | 8 | 16,734 | 518 ms |
+| 24,000 | 1 | 24,502 | 571 ms |
+| 24,000 | 8 | 24,807 | 553 ms |
+| 32,000 | 1 | 32,579 | 734 ms |
+| 32,000 | 8 | 32,378 | 585 ms |
+
+One client, one location, sequential requests over one keep-alive connection.

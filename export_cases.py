@@ -31,6 +31,7 @@ def main():
     rec = Recorder(model)
     for fn in (bench2.e1, bench2.e3, bench2.e4, bench2.e5):
         fn(rec)
+    bench2.e8(rec, 4.92)  # E8 sized its states with the E1 English rate
     out, matched = [], 0
     for exp, body in rec.sent:
         sha = hashlib.sha256(body.encode()).hexdigest()

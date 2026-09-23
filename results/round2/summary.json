@@ -3,17 +3,18 @@
     "run_ids": [
       "20260923T164332Z-r2",
       "20260923T164502Z-r2",
-      "20260923T164851Z-r2"
+      "20260923T164851Z-r2",
+      "20260923T171432Z-r2"
     ],
     "provider": "openrouter",
     "requested_model": "typesafe/jev-1.13",
     "usd_per_m_input": 0.042,
     "python": "3.14.5"
   },
-  "requests": 487,
-  "ok": 479,
-  "billed_usd": 0.03576,
-  "input_tokens": 851428,
+  "requests": 524,
+  "ok": 516,
+  "billed_usd": 0.05798,
+  "input_tokens": 1380472,
   "models": [
     "typesafe/jev-1.13-20260917"
   ],
@@ -1078,5 +1079,91 @@
         "p95": 0.1
       }
     }
-  }
+  },
+  "e8": [
+    {
+      "state_tokens": 1000,
+      "questions": 1,
+      "median_billed": 1286,
+      "median_ms": 375.0,
+      "n": 3
+    },
+    {
+      "state_tokens": 1000,
+      "questions": 8,
+      "median_billed": 1591,
+      "median_ms": 374.8,
+      "n": 3
+    },
+    {
+      "state_tokens": 4000,
+      "questions": 1,
+      "median_billed": 4317,
+      "median_ms": 381.9,
+      "n": 3
+    },
+    {
+      "state_tokens": 4000,
+      "questions": 8,
+      "median_billed": 4622,
+      "median_ms": 501.6,
+      "n": 3
+    },
+    {
+      "state_tokens": 8000,
+      "questions": 1,
+      "median_billed": 8354,
+      "median_ms": 477.5,
+      "n": 3
+    },
+    {
+      "state_tokens": 8000,
+      "questions": 8,
+      "median_billed": 8659,
+      "median_ms": 441.3,
+      "n": 3
+    },
+    {
+      "state_tokens": 16000,
+      "questions": 1,
+      "median_billed": 16429,
+      "median_ms": 571.1,
+      "n": 3
+    },
+    {
+      "state_tokens": 16000,
+      "questions": 8,
+      "median_billed": 16734,
+      "median_ms": 518.4,
+      "n": 3
+    },
+    {
+      "state_tokens": 24000,
+      "questions": 1,
+      "median_billed": 24502,
+      "median_ms": 571.3,
+      "n": 3
+    },
+    {
+      "state_tokens": 24000,
+      "questions": 8,
+      "median_billed": 24807,
+      "median_ms": 553.1,
+      "n": 3
+    },
+    {
+      "state_tokens": 32000,
+      "questions": 1,
+      "median_billed": 32579,
+      "median_ms": 734.1,
+      "n": 3
+    },
+    {
+      "state_tokens": 32000,
+      "questions": 8,
+      "median_billed": 32378,
+      "median_ms": 585.2,
+      "n": 3
+    }
+  ]
 }

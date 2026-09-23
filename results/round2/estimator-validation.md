@@ -4,17 +4,18 @@ jevpricing.com's `estimateRequest()` (lib/calc.ts) against distinct round-2 requ
 
 | Group | Requests | Median |error| | P90 |error| | Max |error| | Mean (signed) |
 |---|---:|---:|---:|---:|---:|
-| **All** | 353 | 1.4% | 4.6% | 11.8% | -1.1% |
+| **All** | 365 | 1.4% | 4.5% | 11.8% | -1.1% |
 | e1 choice_bare | 7 | 1.1% | 2.9% | 3.2% | +1.1% |
 | e1 choice_described | 4 | 1.1% | 2.1% | 2.2% | -1.3% |
 | e1 choice_longkeys | 1 | 1.9% | 1.9% | 1.9% | +1.9% |
-| e1 combo | 7 | 0.3% | 1.6% | 2.0% | +0.2% |
+| e1 combo | 6 | 0.3% | 1.6% | 2.0% | +0.2% |
 | e1 instr_plain | 1 | 0.3% | 0.3% | 0.3% | -0.3% |
 | e1 instr_structured | 1 | 1.3% | 1.3% | 1.3% | -1.3% |
 | e1 lang | 72 | 0.9% | 3.5% | 8.4% | -0.0% |
 | e1 noul_criteria | 1 | 3.4% | 3.4% | 3.4% | +3.4% |
 | e1 noul_words | 2 | 0.3% | 0.3% | 0.4% | +0.3% |
 | e1 score_levels | 4 | 1.5% | 1.7% | 1.7% | -1.6% |
+| e1 warmup | 1 | 0.0% | 0.0% | 0.0% | +0.0% |
 | e3 count_cap | 5 | 0.0% | 0.0% | 0.0% | +0.0% |
 | e3 targets | 56 | 0.2% | 0.5% | 0.9% | +0.0% |
 | e3 targets_long_fillers | 16 | 1.2% | 1.2% | 1.2% | -1.1% |
@@ -25,6 +26,7 @@ jevpricing.com's `estimateRequest()` (lib/calc.ts) against distinct round-2 requ
 | e5 order | 24 | 2.1% | 2.3% | 2.6% | -2.2% |
 | e5 paraphrase | 16 | 2.3% | 2.8% | 3.0% | -2.4% |
 | e5 structured | 8 | 3.8% | 3.9% | 4.2% | -3.8% |
+| e8 latency | 12 | 0.9% | 1.0% | 1.3% | -1.0% |
 The largest errors are requests whose *question instructions* were translated
 (`e4 xx_state_xx_q`, worst 11.8%): non-Latin question text is counted at the
 per-character rate measured for prose in that script, which is approximate.

@@ -368,6 +368,28 @@ def e5(r: Runner) -> dict:
 
 
 # --------------------------------------------------------------------------
+# E8  latency vs request size
+# --------------------------------------------------------------------------
+
+def e8(r: Runner, cpt: float) -> dict:
+    """Warm-connection latency as the state grows from 1k to 32k tokens, with
+    one question and with eight. Three repeats, interleaved so no size gets a
+    systematically quieter minute."""
+    eight = dict(QUESTIONS)
+    one = {"is_billing": QMAP["is_billing"]}
+    r.ask("e8", {"cond": "warmup"}, ".", {"q": noul("Urgent?")})
+    for rep in range(3):
+        for size in (1_000, 4_000, 8_000, 16_000, 24_000, 32_000):
+            for label, qs in (("q1", one), ("q8", eight)):
+                if size == 32_000 and label == "q8":
+                    size_used = 31_500  # keep state + longest question under 32,768
+                else:
+                    size_used = size
+                r.ask("e8", {"cond": "latency", "size": size, "qs": label, "rep": rep}, state_of(size_used, cpt), qs)
+    return {}
+
+
+# --------------------------------------------------------------------------
 # Run
 # --------------------------------------------------------------------------
 
@@ -396,6 +418,8 @@ def cmd_run(args) -> int:
         e4(r)
     if "e5" in only:
         e5(r)
+    if "e8" in only:
+        e8(r, args.cpt)
     r.pub.write(json.dumps({"kind": "notes", "run_id": r.run_id, **notes}) + "\n")
     print(f"Run {r.run_id}: {r.n} requests.")
     return 0
@@ -569,6 +593,15 @@ def cmd_report(args) -> int:
                     res5[cond] += [(ans[x["id"]][q], ans[b[0]["id"]][q], q) for q in qs]
     S["e5"] = {"baseline_repeat_noise": dist_summary(base_noise), **{k: dist_summary(v) for k, v in res5.items()}}
 
+    # E8
+    e8r = [x for x in ok if x["exp"] == "e8" and x.get("cond") == "latency"]
+    g8 = defaultdict(list)
+    for x in e8r:
+        g8[(x["size"], x["qs"])].append(x)
+    S["e8"] = [{"state_tokens": size, "questions": 1 if qs == "q1" else 8,
+                "median_billed": med([x["input_tokens"] for x in xs]),
+                "median_ms": med([x["latency_ms"] for x in xs]), "n": len(xs)}
+               for (size, qs), xs in sorted(g8.items())]
     (OUT / "summary.json").write_text(json.dumps(S, indent=2, ensure_ascii=False, default=str))
     (OUT / "summary.md").write_text(render_md2(S))
     print(json.dumps({k: S[k] for k in ("requests", "ok", "billed_usd", "input_tokens", "models")}, indent=1))
@@ -629,6 +662,12 @@ def render_md2(S: dict) -> str:
         d = e5.get(k, {})
         L.append(f"| {k} | {f(d.get('noul.abs'))} | {f(d.get('choice.tvd'))} | {f(d.get('choice.differs'))} |")
     L += ["", "Wording results describe stability, not accuracy: the tickets are unlabelled.", ""]
+    if S.get("e8"):
+        L += ["## E8 · Latency vs request size (warm connection, 3 repeats)", "",
+              "| State tokens | Questions | Median billed | Median latency |", "|---:|---:|---:|---:|"]
+        for x in S["e8"]:
+            L.append(f"| {x['state_tokens']:,} | {x['questions']} | {x['median_billed']:,} | {x['median_ms']:.0f} ms |")
+        L += ["", "One client, one location, sequential requests over one keep-alive connection.", ""]
     return "\n".join(L)
 
 

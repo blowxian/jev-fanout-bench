@@ -103,7 +103,7 @@ train competing models.
 
 An estimator built on these coefficients is at
 [jevpricing.com/tokens](https://jevpricing.com/tokens/): median error 1.4% over
-353 distinct billed requests ([validation](results/round2/estimator-validation.md)).
+365 distinct billed requests ([validation](results/round2/estimator-validation.md)).
 
 ## Run it
 
