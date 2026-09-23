@@ -259,7 +259,10 @@ def cmd_run(args) -> int:
             "python": sys.version.split()[0], "platform": platform.platform(),
             "git_commit": git_commit(), "usd_per_m_input": USD_PER_M_INPUT,
             "repeats": args.repeats, "requests_planned": total}
-    failures = done = 0
+    failures = done = streak = 0
+    # 401/402/403/404/422 will not fix themselves: an auth, balance or schema
+    # problem would otherwise send thousands of requests that are all refused.
+    fatal = {401, 402, 403, 404, 422}
     with out.open("a") as f:
         f.write(json.dumps(meta) + "\n")
         for _ in range(args.warmup):  # excluded from analysis: kind=warmup
@@ -283,6 +286,12 @@ def cmd_run(args) -> int:
                 if res["status"] != 200:
                     failures += 1
                     print(f"[{done}/{total}] HTTP {res['status']}: {str(res.get('error'))[:200]}", file=sys.stderr)
+                streak = streak + 1 if res["status"] in fatal else 0
+                if streak >= 3:
+                    f.flush()
+                    print(f"Stopping: {streak} consecutive HTTP {res['status']} responses will not succeed on retry.",
+                          file=sys.stderr)
+                    return 1
                 if not args.dry_run and args.sleep:
                     time.sleep(args.sleep)
             f.write(json.dumps({"kind": "block", "run_id": run_id, "block": bi,
