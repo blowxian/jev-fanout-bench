@@ -67,33 +67,38 @@ System One endpoint (provider: TypeSafe). $0.156 billed in total. Full report:
 
 ## Round 2 (2026-09-23): what a request is billed, limits, wording
 
-487 more requests (`bench2.py`, results in [`results/round2/`](results/round2/summary.md)).
+479 more billed requests plus 8 deliberate over-limit probes (`bench2.py`,
+results in [`results/round2/`](results/round2/summary.md)).
 Answers from this round are used only to compute the differences below and are
 not published: TypeSafe's customer agreement forbids using outputs to build or
 train competing models.
 
-- **Billing formula.** ~260 tokens per request, plus per question ~10 tokens
+- **Billing formula.** ~260 tokens per request, plus per question ~8 tokens
   of framing, ~1 per English instruction word, ~8 per Choice option (~21 with
   a six-word description) and 8 per Score level — all linear, R² ≥ 0.999.
 - **Characters per token:** English 4.92, Spanish 4.44, Russian 1.78, Hindi
   1.72, Arabic 1.49, Korean 1.44, Japanese 1.01, Chinese 1.00; JSON state ~2.35.
-- **Context limits** (bisection): state + longest question ≤ 32,768 content
-  tokens, state + all questions ≤ 65,536; the overhead counts toward neither.
+- **Context limits** (bisection): state + longest question passed at 32,688
+  content tokens and was refused at ~32,813; the total passed at 65,388 and
+  was refused at ~65,644 — brackets containing 32,768 and 65,536. The
+  overhead counts toward neither.
   No question-count cap — 1,000 questions in one call succeeded.
 - **No interference.** 16, 60 or 120 unrelated questions in the same call moved
   four target answers no more than repeating them; median latency 426 ms at 4
   questions, 436 ms at 124.
-- **Languages.** Translating the ticket moved answers 3–6× the English repeat
-  noise; translating the questions too moved them further in all seven
-  languages and cost 9–48% more tokens. Keep questions in English.
+- **Languages.** Translating the ticket moved yes/no answers about 3–5× the
+  English repeat noise; translating the questions too moved yes/no answers
+  further in all seven languages and cost 9–48% more tokens. Keep questions
+  in English.
 - **Wording.** Reordering Choice options never changed the top option;
   removing option descriptions or paraphrasing moved probabilities by 2–10
   points — re-check thresholds after rewording.
 - A 72-hour latency monitor (`monitor.py`, every 5 minutes) is running;
   samples accumulate in `results/round2/latency.jsonl`.
 
-An estimator built on these coefficients (median error 0.8% on 24 measured
-requests) is at [jevpricing.com/tokens](https://jevpricing.com/tokens/).
+An estimator built on these coefficients is at
+[jevpricing.com/tokens](https://jevpricing.com/tokens/): median error 1.4% over
+353 distinct billed requests ([validation](results/round2/estimator-validation.md)).
 
 ## Run it
 
