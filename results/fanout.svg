@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 360" font-family="system-ui,sans-serif" font-size="12">
+<rect width="640" height="360" fill="#fff"/>
+<text x="56" y="24" font-size="14" font-weight="600">Input tokens saved by asking N questions in one Jev call</text>
+<line x1="56" x2="584" y1="304.0" y2="304.0" stroke="#e5e7eb"/>
+<text x="48" y="308.0" text-anchor="end" fill="#6b7280">0%</text>
+<line x1="56" x2="584" y1="242.0" y2="242.0" stroke="#e5e7eb"/>
+<text x="48" y="246.0" text-anchor="end" fill="#6b7280">25%</text>
+<line x1="56" x2="584" y1="180.0" y2="180.0" stroke="#e5e7eb"/>
+<text x="48" y="184.0" text-anchor="end" fill="#6b7280">50%</text>
+<line x1="56" x2="584" y1="118.0" y2="118.0" stroke="#e5e7eb"/>
+<text x="48" y="122.0" text-anchor="end" fill="#6b7280">75%</text>
+<line x1="56" x2="584" y1="56.0" y2="56.0" stroke="#e5e7eb"/>
+<text x="48" y="60.0" text-anchor="end" fill="#6b7280">100%</text>
+<text x="56.0" y="322" text-anchor="middle" fill="#6b7280">N=2</text>
+<text x="320.0" y="322" text-anchor="middle" fill="#6b7280">N=4</text>
+<text x="584.0" y="322" text-anchor="middle" fill="#6b7280">N=8</text>
+<polyline fill="none" stroke="#cbd5e1" stroke-width="2.5" points="56.0,196.3 320.0,142.8 584.0,116.1"/>
+<circle cx="56.0" cy="196.3" r="3.5" fill="#cbd5e1"/>
+<circle cx="320.0" cy="142.8" r="3.5" fill="#cbd5e1"/>
+<circle cx="584.0" cy="116.1" r="3.5" fill="#cbd5e1"/>
+<text x="590" y="120.07133969307341" fill="#cbd5e1">tiny</text>
+<polyline fill="none" stroke="#94a3b8" stroke-width="2.5" points="56.0,195.1 320.0,140.9 584.0,113.8"/>
+<circle cx="56.0" cy="195.1" r="3.5" fill="#94a3b8"/>
+<circle cx="320.0" cy="140.9" r="3.5" fill="#94a3b8"/>
+<circle cx="584.0" cy="113.8" r="3.5" fill="#94a3b8"/>
+<text x="590" y="117.84613191660884" fill="#94a3b8">small</text>
+<polyline fill="none" stroke="#10b981" stroke-width="2.5" points="56.0,185.1 320.0,125.7 584.0,96.0"/>
+<circle cx="56.0" cy="185.1" r="3.5" fill="#10b981"/>
+<circle cx="320.0" cy="125.7" r="3.5" fill="#10b981"/>
+<circle cx="584.0" cy="96.0" r="3.5" fill="#10b981"/>
+<text x="590" y="99.95168042370804" fill="#10b981">medium</text>
+<polyline fill="none" stroke="#0f766e" stroke-width="2.5" points="56.0,181.5 320.0,120.3 584.0,89.7"/>
+<circle cx="56.0" cy="181.5" r="3.5" fill="#0f766e"/>
+<circle cx="320.0" cy="120.3" r="3.5" fill="#0f766e"/>
+<circle cx="584.0" cy="89.7" r="3.5" fill="#0f766e"/>
+<text x="590" y="93.6535564507777" fill="#0f766e">large</text>
+</svg>

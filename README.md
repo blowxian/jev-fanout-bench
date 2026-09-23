@@ -19,7 +19,7 @@ the cookbook does not:
    report derives F independently at every N and question subset and shows
    how far the estimates for one state disagree. A one-word `tiny` state is
    included as a control, so the fixed overhead can be read off on its own.
-2. **How big is the saving, by state size?** Roughly 30, 440 and 1,800-token
+2. **How big is the saving, by state size?** Roughly 25, 680 and 3,000-token
    states (a bare ticket; a ticket with account history; a ticket with long
    history and order records), at N = 2, 4 and 8 questions, in percent and in
    dollars per thousand items.
@@ -29,8 +29,41 @@ the cookbook does not:
    requests. A shift smaller than that noise floor is not an effect of
    batching.
 
-**Status: the harness is complete; results are not yet published.** Nothing
-under `results/` is a measurement until a real run has produced it.
+## Results (2026-09-23)
+
+2,976 requests to `jev-1.13-20260917` through OpenRouter's TypeSafe-compatible
+System One endpoint (provider: TypeSafe). $0.156 billed in total. Full report:
+[`results/summary.md`](results/summary.md); every request and response:
+[`results/raw.jsonl`](results/raw.jsonl) (checksums in `results/SHA256SUMS`).
+
+![Input tokens saved by asking N questions in one Jev call](results/fanout.svg)
+
+- **The bill is exactly tokens × rate.** Across all 2,976 responses,
+  `usage.cost` differs from `input_tokens × $0.042/1M` by $0.000000000. The
+  122,844 output tokens returned were not charged.
+- **Billing is exactly linear.** For every state, the implied per-request
+  cost F is identical — 0 tokens of spread — whether derived at N = 2, 4 or 8
+  and whichever questions were asked.
+- **Every request carries about 261 input tokens of fixed overhead.** A
+  one-word state bills F = 261. TypeSafe's own API examples agree: a
+  one-sentence state with one Noul question reports `input_tokens` of 296
+  ([API reference](https://docs.typesafe.ai/api)). A calculator that bills
+  only state + questions understates small requests badly.
+- **So batching saves more than the state alone would suggest**, even for
+  tiny states. Median input tokens, batched vs one call per question:
+
+  | State (≈tokens) | N = 2 | N = 4 | N = 8 |
+  |---|---:|---:|---:|
+  | tiny (control) | 43% | 65% | 76% |
+  | small (~25) | 44% | 66% | 77% |
+  | medium (~680) | 48% | 72% | 84% |
+  | large (~3,000) | 49% | 74% | 86% |
+
+- **Answers do not change.** Batched-vs-single differences equal the noise
+  floor of sending the identical request twice: Noul 0.005 mean (0.005
+  repeated), Score 0.010 (0.010), Choice top option never differed.
+- **Latency:** eight questions in one call returned 7.7–8.6× faster than eight
+  calls made one after another (medians; serial, not concurrent).
 
 ## Run it
 
