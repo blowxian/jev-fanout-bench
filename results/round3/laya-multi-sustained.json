@@ -1,0 +1,91 @@
+{
+ "created_at": "2026-09-26T05:46:05+00:00",
+ "model": "multi",
+ "repo": "aac6fef/laya-multilingual-mlx",
+ "revision": "ba40c87fcb357f1643d04d71323af9cdc3b9e591",
+ "context_limit": 1024,
+ "dtype": "float16",
+ "batch_size": 64,
+ "process": 1,
+ "timing": "perf_counter around agent.predict with mx.synchronize; includes prompt building, tokenization, inference, calibration and result formatting; excludes loading",
+ "environment": {
+  "chip": "Apple M4 Pro",
+  "memory_gb": 64,
+  "gpu_cores": "20",
+  "macos": "27.0",
+  "python": "3.14.5",
+  "mlx": "0.32.2",
+  "laya_mlx": "0.2.0",
+  "laya_mlx_commit": "0a859518634112655cb97c745dbf04f5191aaf13",
+  "on_ac_power": true,
+  "low_power_mode": null
+ },
+ "cold_start": {
+  "import_s": 0.216,
+  "load_s": 0.446,
+  "first_call_ms": 39.0,
+  "process_start_to_first_answer_s": 0.701
+ },
+ "cells": [],
+ "sustained": {
+  "minutes": 5.0,
+  "input_tokens": 500,
+  "questions_per_call": 3,
+  "windows_30s": [
+   {
+    "calls": 1076,
+    "calls_per_s": 35.84,
+    "p50_ms": 27.247,
+    "p95_ms": 31.348
+   },
+   {
+    "calls": 1078,
+    "calls_per_s": 35.9,
+    "p50_ms": 27.076,
+    "p95_ms": 30.584
+   },
+   {
+    "calls": 1058,
+    "calls_per_s": 35.25,
+    "p50_ms": 27.622,
+    "p95_ms": 32.31
+   },
+   {
+    "calls": 1037,
+    "calls_per_s": 34.56,
+    "p50_ms": 28.334,
+    "p95_ms": 31.977
+   },
+   {
+    "calls": 1054,
+    "calls_per_s": 35.13,
+    "p50_ms": 27.832,
+    "p95_ms": 31.651
+   },
+   {
+    "calls": 1075,
+    "calls_per_s": 35.8,
+    "p50_ms": 27.666,
+    "p95_ms": 29.329
+   },
+   {
+    "calls": 1081,
+    "calls_per_s": 36.01,
+    "p50_ms": 27.557,
+    "p95_ms": 29.977
+   },
+   {
+    "calls": 1091,
+    "calls_per_s": 36.35,
+    "p50_ms": 27.29,
+    "p95_ms": 28.659
+   },
+   {
+    "calls": 1074,
+    "calls_per_s": 35.77,
+    "p50_ms": 27.68,
+    "p95_ms": 29.925
+   }
+  ]
+ }
+}

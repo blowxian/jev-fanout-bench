@@ -111,6 +111,33 @@ An estimator built on these coefficients is at
 [jevpricing.com/tokens](https://jevpricing.com/tokens/): median error 1.4% over
 365 distinct billed requests ([validation](results/round2/estimator-validation.md)).
 
+## Round 3 (2026-09-26): Laya-MLX on an Apple M4 Pro
+
+[Laya](https://github.com/NandhaKishorM/laya) is an open-weight typed-decision
+model often compared with Jev; [Laya-MLX](https://github.com/mizorewww/laya-mlx)
+runs it on Apple Silicon. Its README reports M3 Max numbers; this re-measures
+them on an M4 Pro (20 GPU cores, 64 GB) and adds what a cost comparison needs.
+Both checkpoints at the revisions the port's author checksummed, FP16, three
+independent processes per model, 200 samples per cell, plus 5 minutes of
+sustained load each. **No Jev call was made and nothing about accuracy is
+measured**; every answer was discarded. Full report:
+[`results/round3/summary.md`](results/round3/summary.md).
+
+| P50, end to end | Laya 421M (English) | Laya multilingual 322M |
+|---|---:|---:|
+| One short question (the README's example) | 17.5 ms | 7.8 ms |
+| ~420-token state, one question | 57.1 ms | 23.0 ms |
+| 50 questions in one call | 519 ms (96 q/s) | 183 ms (274 q/s) |
+| Sustained 5 min, 3 questions per call, 500 tokens | 42.7 q/s | 107.4 q/s |
+| Process start to first answer | 0.36 s | 0.62 s |
+| Peak MLX memory, one question / 50 questions | 944 / 1,736 MiB | 688 / 1,705 MiB |
+
+The same headline on the author's M3 Max (40 GPU cores): 13.42 ms and 7.39 ms.
+Laya encodes the state again for every question, so its work, and its token
+count, grows with questions × (state + question); Jev bills the state once per
+call. Scripts: [`laya/bench_laya.py`](laya/bench_laya.py),
+[`laya/report_laya.py`](laya/report_laya.py).
+
 ## Run it
 
 Python 3.10+, standard library only.

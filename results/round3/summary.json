@@ -1,0 +1,614 @@
+{
+ "models": {
+  "en": {
+   "name": "Laya 421M (English, 512 ctx)",
+   "repo": "aac6fef/laya-mlx",
+   "revision": "047678560251f28113ee8f5df4be82102c7bf336",
+   "context_limit": 512,
+   "environment": {
+    "chip": "Apple M4 Pro",
+    "memory_gb": 64,
+    "gpu_cores": "20",
+    "macos": "27.0",
+    "python": "3.14.5",
+    "mlx": "0.32.2",
+    "laya_mlx": "0.2.0",
+    "laya_mlx_commit": "0a859518634112655cb97c745dbf04f5191aaf13",
+    "on_ac_power": true,
+    "low_power_mode": null
+   },
+   "cold_start": {
+    "import_s": 0.2,
+    "load_s": 0.17,
+    "first_call_ms": 42.2,
+    "process_start_to_first_answer_s": 0.36
+   },
+   "peak_mb_one_question": 943.6,
+   "peak_mb_fifty_questions": 1736.1,
+   "cells": [
+    {
+     "cell": "headline_one_short_question",
+     "words": null,
+     "options": null,
+     "questions": 1,
+     "input_tokens": 93,
+     "processes": 3,
+     "samples_per_process": 200,
+     "p50_ms": 17.49,
+     "p95_ms": 17.86,
+     "p99_ms": 18.27,
+     "p50_range_ms": [
+      17.467,
+      17.501
+     ],
+     "questions_per_s": 57.2,
+     "tokens_per_s": 5317
+    },
+    {
+     "cell": "state_length",
+     "words": 40,
+     "options": null,
+     "questions": 1,
+     "input_tokens": 77,
+     "processes": 3,
+     "samples_per_process": 200,
+     "p50_ms": 17.3,
+     "p95_ms": 17.46,
+     "p99_ms": 17.55,
+     "p50_range_ms": [
+      17.219,
+      17.312
+     ],
+     "questions_per_s": 57.8,
+     "tokens_per_s": 4451
+    },
+    {
+     "cell": "state_length",
+     "words": 190,
+     "options": null,
+     "questions": 1,
+     "input_tokens": 239,
+     "processes": 3,
+     "samples_per_process": 200,
+     "p50_ms": 34.07,
+     "p95_ms": 34.25,
+     "p99_ms": 34.41,
+     "p50_range_ms": [
+      33.983,
+      34.073
+     ],
+     "questions_per_s": 29.4,
+     "tokens_per_s": 7015
+    },
+    {
+     "cell": "state_length",
+     "words": 360,
+     "options": null,
+     "questions": 1,
+     "input_tokens": 423,
+     "processes": 3,
+     "samples_per_process": 200,
+     "p50_ms": 57.14,
+     "p95_ms": 57.48,
+     "p99_ms": 58.24,
+     "p50_range_ms": [
+      57.135,
+      57.344
+     ],
+     "questions_per_s": 17.5,
+     "tokens_per_s": 7403
+    },
+    {
+     "cell": "questions_per_call",
+     "words": null,
+     "options": null,
+     "questions": 1,
+     "input_tokens": 93,
+     "processes": 3,
+     "samples_per_process": 200,
+     "p50_ms": 17.52,
+     "p95_ms": 18.81,
+     "p99_ms": 20.9,
+     "p50_range_ms": [
+      17.465,
+      17.545
+     ],
+     "questions_per_s": 57.1,
+     "tokens_per_s": 5308
+    },
+    {
+     "cell": "questions_per_call",
+     "words": null,
+     "options": null,
+     "questions": 4,
+     "input_tokens": 347,
+     "processes": 3,
+     "samples_per_process": 200,
+     "p50_ms": 47.79,
+     "p95_ms": 48.07,
+     "p99_ms": 48.2,
+     "p50_range_ms": [
+      47.782,
+      47.843
+     ],
+     "questions_per_s": 83.7,
+     "tokens_per_s": 7261
+    },
+    {
+     "cell": "questions_per_call",
+     "words": null,
+     "options": null,
+     "questions": 16,
+     "input_tokens": 1363,
+     "processes": 3,
+     "samples_per_process": 200,
+     "p50_ms": 174.53,
+     "p95_ms": 179.97,
+     "p99_ms": 183.89,
+     "p50_range_ms": [
+      172.392,
+      177.866
+     ],
+     "questions_per_s": 91.7,
+     "tokens_per_s": 7810
+    },
+    {
+     "cell": "questions_per_call",
+     "words": null,
+     "options": null,
+     "questions": 50,
+     "input_tokens": 4237,
+     "processes": 3,
+     "samples_per_process": 100,
+     "p50_ms": 519.27,
+     "p95_ms": 538.45,
+     "p99_ms": 546.28,
+     "p50_range_ms": [
+      515.895,
+      526.465
+     ],
+     "questions_per_s": 96.3,
+     "tokens_per_s": 8160
+    },
+    {
+     "cell": "choice_options",
+     "words": null,
+     "options": 2,
+     "questions": 1,
+     "input_tokens": 67,
+     "processes": 3,
+     "samples_per_process": 200,
+     "p50_ms": 17.23,
+     "p95_ms": 17.44,
+     "p99_ms": 17.57,
+     "p50_range_ms": [
+      17.157,
+      17.247
+     ],
+     "questions_per_s": 58.0,
+     "tokens_per_s": 3889
+    },
+    {
+     "cell": "choice_options",
+     "words": null,
+     "options": 8,
+     "questions": 1,
+     "input_tokens": 85,
+     "processes": 3,
+     "samples_per_process": 200,
+     "p50_ms": 17.45,
+     "p95_ms": 17.62,
+     "p99_ms": 17.72,
+     "p50_range_ms": [
+      17.421,
+      17.455
+     ],
+     "questions_per_s": 57.3,
+     "tokens_per_s": 4871
+    },
+    {
+     "cell": "choice_options",
+     "words": null,
+     "options": 32,
+     "questions": 1,
+     "input_tokens": 157,
+     "processes": 3,
+     "samples_per_process": 200,
+     "p50_ms": 25.27,
+     "p95_ms": 25.48,
+     "p99_ms": 25.59,
+     "p50_range_ms": [
+      25.229,
+      25.3
+     ],
+     "questions_per_s": 39.6,
+     "tokens_per_s": 6213
+    }
+   ],
+   "sustained": {
+    "minutes": 5.0,
+    "input_tokens": 500,
+    "questions_per_call": 3,
+    "windows_30s": [
+     {
+      "calls": 429,
+      "calls_per_s": 14.28,
+      "p50_ms": 69.978,
+      "p95_ms": 70.514
+     },
+     {
+      "calls": 429,
+      "calls_per_s": 14.27,
+      "p50_ms": 70.091,
+      "p95_ms": 70.462
+     },
+     {
+      "calls": 428,
+      "calls_per_s": 14.25,
+      "p50_ms": 70.109,
+      "p95_ms": 70.695
+     },
+     {
+      "calls": 428,
+      "calls_per_s": 14.25,
+      "p50_ms": 70.139,
+      "p95_ms": 70.568
+     },
+     {
+      "calls": 427,
+      "calls_per_s": 14.23,
+      "p50_ms": 70.179,
+      "p95_ms": 70.744
+     },
+     {
+      "calls": 406,
+      "calls_per_s": 13.52,
+      "p50_ms": 74.282,
+      "p95_ms": 76.862
+     },
+     {
+      "calls": 413,
+      "calls_per_s": 13.76,
+      "p50_ms": 72.298,
+      "p95_ms": 75.128
+     },
+     {
+      "calls": 421,
+      "calls_per_s": 14.01,
+      "p50_ms": 71.136,
+      "p95_ms": 72.53
+     },
+     {
+      "calls": 423,
+      "calls_per_s": 14.09,
+      "p50_ms": 70.79,
+      "p95_ms": 72.463
+     }
+    ],
+    "summary": {
+     "calls_per_s_median": 14.23,
+     "calls_per_s_min": 13.52,
+     "questions_per_s_median": 42.7,
+     "tokens_per_s_median": 7115,
+     "p50_ms_first_window": 69.978,
+     "p50_ms_last_window": 70.79,
+     "p95_ms_worst_window": 76.862
+    }
+   }
+  },
+  "multi": {
+   "name": "Laya multilingual 322M (1,024 ctx)",
+   "repo": "aac6fef/laya-multilingual-mlx",
+   "revision": "ba40c87fcb357f1643d04d71323af9cdc3b9e591",
+   "context_limit": 1024,
+   "environment": {
+    "chip": "Apple M4 Pro",
+    "memory_gb": 64,
+    "gpu_cores": "20",
+    "macos": "27.0",
+    "python": "3.14.5",
+    "mlx": "0.32.2",
+    "laya_mlx": "0.2.0",
+    "laya_mlx_commit": "0a859518634112655cb97c745dbf04f5191aaf13",
+    "on_ac_power": true,
+    "low_power_mode": null
+   },
+   "cold_start": {
+    "import_s": 0.18,
+    "load_s": 0.4,
+    "first_call_ms": 34.3,
+    "process_start_to_first_answer_s": 0.62
+   },
+   "peak_mb_one_question": 687.6,
+   "peak_mb_fifty_questions": 1704.9,
+   "cells": [
+    {
+     "cell": "headline_one_short_question",
+     "words": null,
+     "options": null,
+     "questions": 1,
+     "input_tokens": 91,
+     "processes": 3,
+     "samples_per_process": 200,
+     "p50_ms": 7.8,
+     "p95_ms": 7.97,
+     "p99_ms": 8.03,
+     "p50_range_ms": [
+      7.792,
+      7.838
+     ],
+     "questions_per_s": 128.2,
+     "tokens_per_s": 11667
+    },
+    {
+     "cell": "state_length",
+     "words": 40,
+     "options": null,
+     "questions": 1,
+     "input_tokens": 77,
+     "processes": 3,
+     "samples_per_process": 200,
+     "p50_ms": 7.67,
+     "p95_ms": 7.81,
+     "p99_ms": 7.88,
+     "p50_range_ms": [
+      7.645,
+      7.738
+     ],
+     "questions_per_s": 130.4,
+     "tokens_per_s": 10039
+    },
+    {
+     "cell": "state_length",
+     "words": 190,
+     "options": null,
+     "questions": 1,
+     "input_tokens": 239,
+     "processes": 3,
+     "samples_per_process": 200,
+     "p50_ms": 14.09,
+     "p95_ms": 14.28,
+     "p99_ms": 14.34,
+     "p50_range_ms": [
+      14.079,
+      14.129
+     ],
+     "questions_per_s": 71.0,
+     "tokens_per_s": 16962
+    },
+    {
+     "cell": "state_length",
+     "words": 360,
+     "options": null,
+     "questions": 1,
+     "input_tokens": 423,
+     "processes": 3,
+     "samples_per_process": 200,
+     "p50_ms": 23.02,
+     "p95_ms": 23.18,
+     "p99_ms": 23.25,
+     "p50_range_ms": [
+      22.956,
+      23.024
+     ],
+     "questions_per_s": 43.4,
+     "tokens_per_s": 18375
+    },
+    {
+     "cell": "state_length",
+     "words": 730,
+     "options": null,
+     "questions": 1,
+     "input_tokens": 823,
+     "processes": 3,
+     "samples_per_process": 200,
+     "p50_ms": 43.06,
+     "p95_ms": 43.27,
+     "p99_ms": 43.4,
+     "p50_range_ms": [
+      43.031,
+      43.248
+     ],
+     "questions_per_s": 23.2,
+     "tokens_per_s": 19113
+    },
+    {
+     "cell": "questions_per_call",
+     "words": null,
+     "options": null,
+     "questions": 1,
+     "input_tokens": 91,
+     "processes": 3,
+     "samples_per_process": 200,
+     "p50_ms": 7.79,
+     "p95_ms": 7.95,
+     "p99_ms": 8.05,
+     "p50_range_ms": [
+      7.772,
+      7.814
+     ],
+     "questions_per_s": 128.4,
+     "tokens_per_s": 11682
+    },
+    {
+     "cell": "questions_per_call",
+     "words": null,
+     "options": null,
+     "questions": 4,
+     "input_tokens": 348,
+     "processes": 3,
+     "samples_per_process": 200,
+     "p50_ms": 19.32,
+     "p95_ms": 19.57,
+     "p99_ms": 19.61,
+     "p50_range_ms": [
+      19.296,
+      19.571
+     ],
+     "questions_per_s": 207.0,
+     "tokens_per_s": 18012
+    },
+    {
+     "cell": "questions_per_call",
+     "words": null,
+     "options": null,
+     "questions": 16,
+     "input_tokens": 1376,
+     "processes": 3,
+     "samples_per_process": 200,
+     "p50_ms": 60.81,
+     "p95_ms": 61.2,
+     "p99_ms": 61.31,
+     "p50_range_ms": [
+      60.808,
+      60.854
+     ],
+     "questions_per_s": 263.1,
+     "tokens_per_s": 22628
+    },
+    {
+     "cell": "questions_per_call",
+     "words": null,
+     "options": null,
+     "questions": 50,
+     "input_tokens": 4287,
+     "processes": 3,
+     "samples_per_process": 100,
+     "p50_ms": 182.6,
+     "p95_ms": 185.4,
+     "p99_ms": 185.94,
+     "p50_range_ms": [
+      182.251,
+      183.593
+     ],
+     "questions_per_s": 273.8,
+     "tokens_per_s": 23478
+    },
+    {
+     "cell": "choice_options",
+     "words": null,
+     "options": 2,
+     "questions": 1,
+     "input_tokens": 70,
+     "processes": 3,
+     "samples_per_process": 200,
+     "p50_ms": 7.68,
+     "p95_ms": 7.84,
+     "p99_ms": 7.98,
+     "p50_range_ms": [
+      7.641,
+      7.684
+     ],
+     "questions_per_s": 130.2,
+     "tokens_per_s": 9115
+    },
+    {
+     "cell": "choice_options",
+     "words": null,
+     "options": 8,
+     "questions": 1,
+     "input_tokens": 94,
+     "processes": 3,
+     "samples_per_process": 200,
+     "p50_ms": 7.76,
+     "p95_ms": 7.95,
+     "p99_ms": 8.0,
+     "p50_range_ms": [
+      7.747,
+      7.795
+     ],
+     "questions_per_s": 128.9,
+     "tokens_per_s": 12113
+    },
+    {
+     "cell": "choice_options",
+     "words": null,
+     "options": 32,
+     "questions": 1,
+     "input_tokens": 213,
+     "processes": 3,
+     "samples_per_process": 200,
+     "p50_ms": 13.52,
+     "p95_ms": 13.7,
+     "p99_ms": 13.76,
+     "p50_range_ms": [
+      13.497,
+      13.519
+     ],
+     "questions_per_s": 74.0,
+     "tokens_per_s": 15754
+    }
+   ],
+   "sustained": {
+    "minutes": 5.0,
+    "input_tokens": 500,
+    "questions_per_call": 3,
+    "windows_30s": [
+     {
+      "calls": 1076,
+      "calls_per_s": 35.84,
+      "p50_ms": 27.247,
+      "p95_ms": 31.348
+     },
+     {
+      "calls": 1078,
+      "calls_per_s": 35.9,
+      "p50_ms": 27.076,
+      "p95_ms": 30.584
+     },
+     {
+      "calls": 1058,
+      "calls_per_s": 35.25,
+      "p50_ms": 27.622,
+      "p95_ms": 32.31
+     },
+     {
+      "calls": 1037,
+      "calls_per_s": 34.56,
+      "p50_ms": 28.334,
+      "p95_ms": 31.977
+     },
+     {
+      "calls": 1054,
+      "calls_per_s": 35.13,
+      "p50_ms": 27.832,
+      "p95_ms": 31.651
+     },
+     {
+      "calls": 1075,
+      "calls_per_s": 35.8,
+      "p50_ms": 27.666,
+      "p95_ms": 29.329
+     },
+     {
+      "calls": 1081,
+      "calls_per_s": 36.01,
+      "p50_ms": 27.557,
+      "p95_ms": 29.977
+     },
+     {
+      "calls": 1091,
+      "calls_per_s": 36.35,
+      "p50_ms": 27.29,
+      "p95_ms": 28.659
+     },
+     {
+      "calls": 1074,
+      "calls_per_s": 35.77,
+      "p50_ms": 27.68,
+      "p95_ms": 29.925
+     }
+    ],
+    "summary": {
+     "calls_per_s_median": 35.8,
+     "calls_per_s_min": 34.56,
+     "questions_per_s_median": 107.4,
+     "tokens_per_s_median": 17900,
+     "p50_ms_first_window": 27.247,
+     "p50_ms_last_window": 27.68,
+     "p95_ms_worst_window": 32.31
+    }
+   }
+  }
+ }
+}
