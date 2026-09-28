@@ -29,6 +29,11 @@ the cookbook does not:
    requests. A shift smaller than that noise floor is not an effect of
    batching.
 
+The aggregate tables are also published as a Hugging Face dataset:
+[lisonallen/jev-ai-benchmark](https://huggingface.co/datasets/lisonallen/jev-ai-benchmark).
+A plain-language summary with a cost calculator lives at
+[jevpricing.com/jev-ai](https://jevpricing.com/jev-ai/).
+
 ## Results (2026-09-23)
 
 2,976 requests to `jev-1.13-20260917` through OpenRouter's TypeSafe-compatible
