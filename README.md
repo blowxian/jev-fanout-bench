@@ -156,8 +156,8 @@ this is what it has recorded for `jev-1.13.0`.
 | 2026-09-30 | 100,000 | 40 per second | 2,500 |
 
 Below the crossover the request limit binds first, above it the token limit.
-At the new limits a call of ~1,000 billed tokens (the 680-token state with
-four questions) is request-bound at 40 calls/s, twice the old rate; a
+At the new limits a call of ~1,000 billed tokens (a 500-token state with
+four short questions plus the overhead) is request-bound at 40 calls/s, twice the old rate; a
 10,000-token call gets ~10 calls/s, under half the old rate. The 1,000-question
 call and the 32K/64K context cut-offs in round 2 are unaffected; they were not
 rate limits. TypeSafe says these limits adjust dynamically. Explained with a
