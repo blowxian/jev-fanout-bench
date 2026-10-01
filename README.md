@@ -143,6 +143,26 @@ count, grows with questions × (state + question); Jev bills the state once per
 call. Scripts: [`laya/bench_laya.py`](laya/bench_laya.py),
 [`laya/report_laya.py`](laya/report_laya.py).
 
+## Published rate limits over time
+
+The runs above happened under the earlier limits. TypeSafe's
+[models page](https://docs.typesafe.ai/models) is checked daily by
+[jevpricing.com's fact check](https://github.com/blowxian/jevpricing/blob/main/scripts/verify-facts.mjs);
+this is what it has recorded for `jev-1.13.0`.
+
+| First seen | Tokens per second | Requests | Crossover (billed tokens per call) |
+|---|---:|---:|---:|
+| up to 2026-09-29 | 250,000 | 1,200 per minute (20/s) | 12,500 |
+| 2026-09-30 | 100,000 | 40 per second | 2,500 |
+
+Below the crossover the request limit binds first, above it the token limit.
+At the new limits a call of ~1,000 billed tokens (the 680-token state with
+four questions) is request-bound at 40 calls/s, twice the old rate; a
+10,000-token call gets ~10 calls/s, under half the old rate. The 1,000-question
+call and the 32K/64K context cut-offs in round 2 are unaffected; they were not
+rate limits. TypeSafe says these limits adjust dynamically. Explained with a
+calculator at [jevpricing.com/rate-limits](https://jevpricing.com/rate-limits/#changed).
+
 ## Run it
 
 Python 3.10+, standard library only.
